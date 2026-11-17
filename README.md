@@ -34,24 +34,27 @@ g2, the h-pawn covers g3. No block, no capture, no escape.
 | Piece of the engine | What it does |
 |---|---|
 | 0x88 board + piece lists | Fast move gen & eval |
-| Alpha-beta + iterative deepening | Fixed 65,000-node budget per move |
+| Alpha-beta + iterative deepening | Fixed 90,000-node budget per move (40k taper in long games) |
 | Quiescence | Captures, promotions, all evasions in check |
 | Transposition table + killers | Ordering: TT move, MVV-LVA, killers |
 | Null-move pruning + late-move reductions | Deeper search for the same nodes |
+| Incremental eval + partition ordering | O(1) eval, ~50% faster move ordering |
+| Futility + QS delta pruning | Prunes hopeless quiet moves and captures |
 | Formula piece-square tables | Material + tapered king + bishop pair |
 
 ## Results (local practice trials)
 
 | Trial | Score | Elo |
 |---|---|---|
-| trial-0 | 6–0, all by checkmate | 2,112 (max) |
-| trial-1 | 3–1–2 | 1,364 |
-| trial-2 | 4–0–2 | 1,451 |
-| **Mean** | | **1,642** |
+| trial-0 | 5–0–1 | 1,654 |
+| trial-1 | 6–0–0 | 2,112 (max) |
+| trial-2 | 5–0–1 | 1,654 |
+| **Mean** | | **1,807** |
 
 House baseline (sunfish 4K) mean: 1,365. Practice floor to enter the final:
-1,154. On a custom top-rung gauntlet (nodes-500k/1M/2M) the engine draws
-nodes-500k and loses to nodes-1M/2M — the final's hardest rungs.
+1,154. On a custom final-style gauntlet (all 8 rungs incl. nodes-1M/2M) the
+engine scores 1,530 — it beats depth-2/3/4 + nodes-100k/250k, draws or loses
+to nodes-500k, and loses to nodes-1M/2M, the final's hardest rungs.
 
 ## Run it
 
